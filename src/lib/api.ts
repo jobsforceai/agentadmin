@@ -1,13 +1,13 @@
-import axios from 'axios';
-import { getAuthToken } from './auth';
+import axios from "axios";
+import { getAuthToken } from "./auth";
 
-const API_BASE_URL = 'https://api.jobsforce.ai/api';
+const API_BASE_URL = "https://api.jobsforce.ai/api";
 
 // Create an axios instance with base configuration
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -22,7 +22,7 @@ api.interceptors.request.use((config) => {
 
 // Auth endpoints
 export const loginAdmin = async (email: string, password: string) => {
-  const response = await api.post('/agentadmin/login', { email, password });
+  const response = await api.post("/agentadmin/login", { email, password });
   return response.data;
 };
 
@@ -32,34 +32,34 @@ export const createAgent = async (agentData: {
   email: string;
   phoneNumber: string;
   password: string;
-  role?: 'selfapply' | 'userapply';
+  role?: "selfapply" | "userapply";
 }) => {
-  const response = await api.post('/agentadmin/create-agent', agentData);
+  const response = await api.post("/agentadmin/create-agent", agentData);
   return response.data;
 };
 
 export const getAllAgents = async (params: {
   search?: string;
-  role?: 'selfapply' | 'userapply';
+  role?: "selfapply" | "userapply";
   startDate?: string;
   endDate?: string;
   page?: number;
   limit?: number;
 }) => {
-  const response = await api.get('/agentadmin/get-all-agents', { params });
+  const response = await api.get("/agentadmin/get-all-agents", { params });
   return response.data;
 };
 
 export const updateAgentType = async (data: {
   agentId: string;
-  type: 'selfapply' | 'userapply';
+  type: "selfapply" | "userapply";
 }) => {
-  const response = await api.put('/agentadmin/update-agent', data);
+  const response = await api.put("/agentadmin/update-agent", data);
   return response.data;
 };
 
 export const getAgentDetails = async (data: { agentId: string }) => {
-  const response = await api.post('/agentadmin/check-agent', data);
+  const response = await api.post("/agentadmin/check-agent", data);
   return response.data;
 };
 
@@ -69,7 +69,7 @@ export const searchUsers = async (params: {
   page?: number;
   limit?: number;
 }) => {
-  const response = await api.get('/agentadmin/search-users', { params });
+  const response = await api.get("/agentadmin/search-users", { params });
   return response.data;
 };
 
@@ -77,37 +77,45 @@ export const assignUsersToAgent = async (data: {
   agentId: string;
   userIds: string[];
 }) => {
-  const response = await api.post('/agentadmin/assign-users', data);
+  const response = await api.post("/agentadmin/assign-users", data);
   return response.data;
 };
 
 export const authorizeUser = async (data: { userId: string }) => {
-  const response = await api.patch('/agentadmin/authorize-user', data);
+  const response = await api.patch("/agentadmin/authorize-user", data);
   return response.data;
 };
 
 export const deauthorizeUser = async (data: { userId: string }) => {
-  const response = await api.patch('/agentadmin/deauthorize-user', data);
+  const response = await api.patch("/agentadmin/deauthorize-user", data);
   return response.data;
 };
 
 // Stats and data endpoints
 export const getJobsApplied = async (params: {
   userId: string;
-  status?: 'applied' | 'received';
+  status?: "applied" | "received";
   page?: number;
   limit?: number;
 }) => {
-  const response = await api.get('/agentadmin/get-jobs-applied', { params });
+  const response = await api.get("/agentadmin/get-jobs-applied", { params });
   return response.data;
 };
 
 export const getMeetEvents = async (params: {
   userId?: string;
   email?: string;
-  status?: 'scheduled' | 'attended' | 'cancelled';
+  status?: "scheduled" | "attended" | "cancelled";
 }) => {
-  const response = await api.get('/agentadmin/meet-events', { params });
+  const response = await api.get("/agentadmin/meet-events", { params });
+  return response.data;
+};
+
+export const updateMeetingStatus = async (data: {
+  meetId: string;
+  status: "scheduled" | "attended" | "cancelled";
+}) => {
+  const response = await api.put("/agentadmin/update-meet-status", data);
   return response.data;
 };
 

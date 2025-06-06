@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Eye, Edit, Search } from 'lucide-react';
-import { useAgentsStore } from '../../store/agents';
-import Button from '../ui/Button';
-import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Eye, Edit, Search } from "lucide-react";
+import { useAgentsStore } from "../../store/agents";
+import Button from "../ui/Button";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const AgentList = () => {
   const navigate = useNavigate();
-  const { agents, totalAgents, currentPage, totalPages, fetchAgents, isLoading } = useAgentsStore();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const {
+    agents,
+    totalAgents,
+    currentPage,
+    totalPages,
+    fetchAgents,
+    isLoading,
+  } = useAgentsStore();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRole, setSelectedRole] = useState<string>("");
 
   useEffect(() => {
     fetchAgents();
@@ -18,7 +25,7 @@ const AgentList = () => {
   const handleSearch = () => {
     fetchAgents({
       search: searchTerm || undefined,
-      role: (selectedRole as 'selfapply' | 'userapply') || undefined,
+      role: (selectedRole as "selfapply" | "userapply") || undefined,
     });
   };
 
@@ -33,15 +40,17 @@ const AgentList = () => {
   const handlePageChange = (page: number) => {
     fetchAgents({
       search: searchTerm || undefined,
-      role: (selectedRole as 'selfapply' | 'userapply') || undefined,
-      page
+      role: (selectedRole as "selfapply" | "userapply") || undefined,
+      page,
     });
   };
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Search Agents</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Search Agents
+        </h2>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -57,7 +66,7 @@ const AgentList = () => {
               />
             </div>
           </div>
-          
+
           <div className="w-full md:w-64">
             <select
               className="block w-full px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -69,7 +78,7 @@ const AgentList = () => {
               <option value="userapply">User Apply</option>
             </select>
           </div>
-          
+
           <div>
             <Button onClick={handleSearch} isLoading={isLoading}>
               Search
@@ -77,19 +86,19 @@ const AgentList = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-800">Agent List</h2>
             <div>
-              <Button onClick={() => navigate('/agents/create')}>
+              <Button onClick={() => navigate("/agents/create")}>
                 Add Agent
               </Button>
             </div>
           </div>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -116,22 +125,28 @@ const AgentList = () => {
                 agents.map((agent) => (
                   <tr key={agent._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{agent.username}</div>
+                      <div className="font-medium text-gray-900">
+                        {agent.username}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-gray-500">{agent.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        agent.role === 'selfapply' 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {agent.role === 'selfapply' ? 'Self Apply' : 'User Apply'}
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          agent.role === "selfapply"
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {agent.role === "selfapply"
+                          ? "Self Apply"
+                          : "User Apply"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      {format(new Date(agent.createdAt), 'MMM d, yyyy')}
+                      {format(new Date(agent.createdAt), "MMM d, yyyy")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
@@ -153,22 +168,29 @@ const AgentList = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                    {isLoading ? 'Loading agents...' : 'No agents found'}
+                  <td
+                    colSpan={5}
+                    className="px-6 py-4 text-center text-gray-500"
+                  >
+                    {isLoading ? "Loading agents..." : "No agents found"}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-        
+
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
             <div className="text-sm text-gray-700">
-              Showing <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to{' '}
-              <span className="font-medium">{Math.min(currentPage * 10, totalAgents)}</span> of{' '}
-              <span className="font-medium">{totalAgents}</span> agents
+              Showing{" "}
+              <span className="font-medium">{(currentPage - 1) * 10 + 1}</span>{" "}
+              to{" "}
+              <span className="font-medium">
+                {Math.min(currentPage * 10, totalAgents)}
+              </span>{" "}
+              of <span className="font-medium">{totalAgents}</span> agents
             </div>
             <div className="flex space-x-2">
               <Button

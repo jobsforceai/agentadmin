@@ -3,11 +3,11 @@ export interface User {
   _id: string;
   userName: string;
   email: string;
-  loginMethod: 'email' | 'google';
+  loginMethod: "email" | "google";
   hasSubmittedQueryForm: boolean;
   isVerified: boolean;
   isDetailsFilled: boolean;
-  userType: 'freemium' | 'premium';
+  userType: "freemium" | "premium";
   isBlocked: boolean;
   portfoliourl: string[];
   authforextension: string;
@@ -28,7 +28,7 @@ export interface Agent {
   username: string;
   email: string;
   phoneNumber: string;
-  role: 'selfapply' | 'userapply';
+  role: "selfapply" | "userapply";
   assignedUsers: User[];
   createdAt: string;
   updatedAt: string;
@@ -47,8 +47,8 @@ export interface Job {
   _id: string;
   userId: string;
   joburl: string;
-  status: 'received' | 'applied';
-  priority: 'low' | 'medium' | 'high';
+  status: "received" | "applied";
+  priority: "low" | "medium" | "high";
   proofofapply: string | null;
   createdAt: string;
   updatedAt: string;
@@ -79,9 +79,11 @@ export interface Meeting {
   date: string;
   time: string;
   timezone: string;
-  status: 'scheduled' | 'attended' | 'cancelled';
+  status: "scheduled" | "attended" | "cancelled";
   meetLink: string;
   durationMinutes: number;
+  email?: string | null;
+  name?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -90,6 +92,11 @@ export interface MeetingResponse {
   message: string;
   count: number;
   events: Meeting[];
+}
+
+export interface MeetingUpdatePayload {
+  meetId: string;
+  status: "scheduled" | "attended" | "cancelled";
 }
 
 // Auth types
@@ -112,12 +119,12 @@ export interface AgentCreatePayload {
   email: string;
   phoneNumber: string;
   password: string;
-  role?: 'selfapply' | 'userapply';
+  role?: "selfapply" | "userapply";
 }
 
 export interface AgentUpdatePayload {
   agentId: string;
-  type: 'selfapply' | 'userapply';
+  type: "selfapply" | "userapply";
 }
 
 export interface UserAssignPayload {

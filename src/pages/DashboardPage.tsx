@@ -68,7 +68,7 @@ const DashboardPage = () => {
                     </div>
                     <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
                       <div 
-                        className="bg-blue-600 h-2.5 rounded-full" 
+                        className="bg-[#3fe3ff] h-2.5 rounded-full" 
                         style={{ width: `${(agent.assignedUsers?.length || 0) / Math.max(...agents.map(a => a.assignedUsers?.length || 0)) * 100}%` }}
                       ></div>
                     </div>

@@ -1,13 +1,20 @@
-import { create } from 'zustand';
-import { 
-  assignUsersToAgent, 
-  authorizeUser, 
-  deauthorizeUser, 
-  getJobsApplied, 
-  getMeetEvents, 
-  searchUsers 
-} from '../lib/api';
-import { JobsResponse, Meeting, MeetingResponse, User, UserSearch } from '../lib/types';
+import { create } from "zustand";
+import {
+  assignUsersToAgent,
+  authorizeUser,
+  deauthorizeUser,
+  getJobsApplied,
+  getMeetEvents,
+  searchUsers,
+  updateMeetingStatus,
+} from "../lib/api";
+import {
+  JobsResponse,
+  Meeting,
+  MeetingResponse,
+  User,
+  UserSearch,
+} from "../lib/types";
 
 interface UsersState {
   users: User[];
@@ -28,22 +35,29 @@ interface UsersState {
     agentId: string;
     userIds: string[];
   }) => Promise<boolean>;
-  toggleUserAuthorization: (userId: string, authorize: boolean) => Promise<boolean>;
+  toggleUserAuthorization: (
+    userId: string,
+    authorize: boolean
+  ) => Promise<boolean>;
   getUserJobs: (params: {
     userId: string;
-    status?: 'applied' | 'received';
+    status?: "applied" | "received";
     page?: number;
     limit?: number;
   }) => Promise<void>;
   getUserMeetings: (params: {
     userId?: string;
     email?: string;
-    status?: 'scheduled' | 'attended' | 'cancelled';
+    status?: "scheduled" | "attended" | "cancelled";
   }) => Promise<void>;
+  updateMeetingStatus: (data: {
+    meetId: string;
+    status: "scheduled" | "attended" | "cancelled";
+  }) => Promise<boolean>;
   setSelectedUser: (user: User | null) => void;
 }
 
-export const useUsersStore = create<UsersState>((set) => ({
+export const useUsersStore = create<UsersState>((set, get) => ({
   users: [],
   totalUsers: 0,
   currentPage: 1,
@@ -63,12 +77,11 @@ export const useUsersStore = create<UsersState>((set) => ({
         totalUsers: response.total,
         currentPage: response.page,
         totalPages: response.totalPages,
-        isLoading: false
+        isLoading: false,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Failed to search users.';
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to search users.";
       set({ isLoading: false, error: errorMessage });
     }
   },
@@ -80,9 +93,10 @@ export const useUsersStore = create<UsersState>((set) => ({
       set({ isLoading: false });
       return true;
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Failed to assign users to agent.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to assign users to agent.";
       set({ isLoading: false, error: errorMessage });
       return false;
     }
@@ -99,9 +113,10 @@ export const useUsersStore = create<UsersState>((set) => ({
       set({ isLoading: false });
       return true;
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : `Failed to ${authorize ? 'authorize' : 'deauthorize'} user.`;
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : `Failed to ${authorize ? "authorize" : "deauthorize"} user.`;
       set({ isLoading: false, error: errorMessage });
       return false;
     }
@@ -113,12 +128,11 @@ export const useUsersStore = create<UsersState>((set) => ({
       const response: JobsResponse = await getJobsApplied(params);
       set({
         userJobs: response,
-        isLoading: false
+        isLoading: false,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Failed to fetch user jobs.';
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch user jobs.";
       set({ isLoading: false, error: errorMessage });
     }
   },
@@ -129,17 +143,34 @@ export const useUsersStore = create<UsersState>((set) => ({
       const response: MeetingResponse = await getMeetEvents(params);
       set({
         userMeetings: response.events,
-        isLoading: false
+        isLoading: false,
       });
     } catch (error) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Failed to fetch user meetings.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch user meetings.";
       set({ isLoading: false, error: errorMessage });
+    }
+  },
+
+  updateMeetingStatus: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      await updateMeetingStatus(data);
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update meeting status.";
+      set({ isLoading: false, error: errorMessage });
+      return false;
     }
   },
 
   setSelectedUser: (user) => {
     set({ selectedUser: user });
-  }
+  },
 }));
